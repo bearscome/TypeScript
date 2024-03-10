@@ -53,14 +53,14 @@ bb(30);
 
 // 오버로드
 // 동일한 함수지만 매개변수의 타입이나 개수에 따라 리턴하는 타입이 다르다면 오버로드를 사용해야 한다.
-interface User {
+interface User1 {
     name: string;
     age: number;
 };
 
 function join(name: string, age:string): string;
-function join(name:string, age:number): User;
-function join(name:string, age: number | string): User | string {
+function join(name:string, age:number): User1;
+function join(name:string, age: number | string): User1 | string {
     if(typeof age === 'number') {
         return {
             name,
