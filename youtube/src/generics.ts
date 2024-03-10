@@ -70,14 +70,14 @@ const car1: Car3 = {name: "car", color: "red"};
 const car2: Car4 = {name: true, color :"red"}
 const book1: Book = {price: 3000};
 
-function showName<T>(data: T):string {
-    // 제네릭에 name이라는 프로퍼티가 있다는 보장을 받지 못하니까 에러
-    return data.name
-};
+// function showName<T>(data: T):string {
+//     // 제네릭에 name이라는 프로퍼티가 있다는 보장을 받지 못하니까 에러
+//     return data.name
+// };
 
-showName(user1);
-showName(car1);
-showName(book1);
+// showName(user1);
+// showName(car1);
+// showName(book1);
 
 function showName1<T extends {name: string}>(data: T):string {
     // 제네릭에 name이라는 key를 보장
@@ -85,8 +85,8 @@ function showName1<T extends {name: string}>(data: T):string {
 };
 showName1(user1);
 showName1(car1);
-showName1(car2); // name이 boolean 값으로 설정되어 있어서 오류
-showName1(book1); // book의 interface는 name이라는 key가 없으니 오류
+// showName1(car2); // name이 boolean 값으로 설정되어 있어서 오류
+// showName1(book1); // book의 interface는 name이라는 key가 없으니 오류
 
 
 
