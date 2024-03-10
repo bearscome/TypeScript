@@ -80,7 +80,7 @@ showName(car1);
 showName(book1);
 
 function showName1<T extends {name: string}>(data: T):string {
-    // 제네릭에 name이라는 프로퍼티가 있다는 보장을 받지 못하니까 에러
+    // 제네릭에 name이라는 key를 보장
     return data.name
 };
 showName1(user1);
