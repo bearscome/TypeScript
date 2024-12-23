@@ -17,36 +17,15 @@ const Snow = (props: SnowProps) => {
 
       for (let i = 0; i < refs.current.length; i++) {
         if (refs.current[i]) {
-          const itemHeight = refs.current[i]!.clientHeight;
-          setAniTransY({ index: i, parentHeight, itemHeight });
+          const height = +refs.current[i]!.clientHeight;
+
+          refs.current[i]!.style.transition = "transform 2s ease";
+          refs.current[i]!.style.transform =
+            ` translateY(${parentHeight - height}px)`;
         }
       }
     }
   }, []);
-
-  const resetTransY = (index: number): void => {
-    const parentHeight = parentRef.current!.clientHeight;
-    const itemHeight = refs.current[index]!.clientHeight;
-
-    refs.current[index]!.style.transition = "transform 0s";
-    refs.current[index]!.style.transform = "translateY(0px)";
-
-    setAniTransY({ index, parentHeight, itemHeight });
-  };
-
-  const setAniTransY = ({
-    index,
-    parentHeight,
-    itemHeight,
-  }: {
-    index: number;
-    parentHeight: number;
-    itemHeight: number;
-  }): void => {
-    refs.current[index]!.style.transition = "transform 2s ease";
-    refs.current[index]!.style.transform =
-      ` translateY(${parentHeight - itemHeight}px)`;
-  };
 
   const setSnowItem = () => {
     const itemList = [];
@@ -67,7 +46,6 @@ const Snow = (props: SnowProps) => {
             backgroundColor: colorList[i % 5],
             transform: `translate(${posX}%, 0px)`,
           }}
-          onTransitionEnd={() => resetTransY(i)}
         ></div>,
       );
     }
