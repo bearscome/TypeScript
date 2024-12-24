@@ -7,11 +7,12 @@ import Snow from "./components/Snow";
 const App: FC = function () {
   return (
     <>
+      <Snow width={100} height={100} count={1} />
+
       <div>
         <Profile />
         <Login />
       </div>
-      <Snow width={100} height={100} count={20} />
     </>
   );
 };
