@@ -75,8 +75,6 @@ const Snow = (props: SnowProps) => {
     return itemList;
   };
 
-  //a
-
   return (
     <div
       ref={parentRef}
