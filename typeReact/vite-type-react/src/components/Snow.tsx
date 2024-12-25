@@ -17,8 +17,8 @@ const Snow = (props: SnowProps) => {
   useEffect(() => {
     if (refs.current && parentRef.current) {
       for (let i = 0; i < count; i++) {
-        setTransition(i);
         initialOffset.push(refs.current[i]!.getBoundingClientRect());
+        setTransition(i);
       }
     }
   }, []);
