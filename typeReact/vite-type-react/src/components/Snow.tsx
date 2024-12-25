@@ -1,4 +1,4 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 
 interface SnowProps {
   width: number;
@@ -13,79 +13,36 @@ const Snow = (props: SnowProps) => {
   const { width, height, count } = props;
   const parentRef = useRef<HTMLDivElement | null>(null);
   const refs = useRef<(HTMLDivElement | null)[]>([]);
-  const rafRefs = useRef<any[]>([]);
 
   useEffect(() => {
     if (refs.current && parentRef.current) {
-      const startAniXY = (index: number): void => {
-        const current = refs.current[index];
-        const parent = parentRef.current;
-
-        if (parent && current) {
-          const ZERO = 0;
-
-          const currentTransform = window.getComputedStyle(current).transform;
-          const matrix = new DOMMatrix(currentTransform);
-          const currentX = matrix.m41;
-          const currentY = matrix.m42;
+      for (let i = 0; i < count; i++) {
+        if (refs.current[i] && parentRef.current) {
+          const parent = parentRef.current;
+          const current = refs.current[i];
 
           const parentWidth = parent.clientWidth;
           const parentHeight = parent.clientHeight;
 
-          const itemWidth = current.clientWidth;
-          const itemHeight = current.clientHeight;
+          const itemWidth = current!.clientWidth;
+          const itemHeight = current!.clientHeight;
 
           const maxRight = parentWidth - itemWidth;
           const maxBottom = parentHeight - itemHeight;
 
           let moveX = 0;
           let moveY = 0;
-          let durationTime = 0;
+          let durationTime = Math.floor(Math.random() * 10) + DURATION_TIME;
 
-          if (currentY === 0) {
-            moveX = maxRight;
-            moveY = Math.floor(Math.random() * maxBottom);
-            durationTime = Math.floor(Math.random() * 10) + DURATION_TIME;
+          moveX = maxRight - current!.getBoundingClientRect().left;
+          moveY = Math.floor(Math.random() * maxBottom);
 
-            current.style.transition = `transform ${durationTime}s ease`;
-            current.style.transform = `translate(${moveX}px, ${moveY}px)`;
-          } else if (currentY > 10) {
-            if (currentX <= ZERO || currentX >= maxRight) {
-              moveX = currentX == 0 ? maxRight : ZERO;
-
-              if (currentY >= maxBottom) {
-                durationTime = ZERO;
-                moveY = ZERO;
-              } else if (currentY <= maxBottom) {
-                moveY = currentY + Math.floor(Math.random() * maxBottom);
-                durationTime = Math.floor(Math.random() * 10) + DURATION_TIME;
-
-                if (maxBottom <= moveY) {
-                  moveY = maxBottom;
-                }
-              }
-
-              current.style.transition = `transform ${durationTime}s ease`;
-              current.style.transform = `translate(${moveX}px, ${moveY}px)`;
-            }
-          }
-
-          rafRefs.current[index] = requestAnimationFrame(() =>
-            startAniXY(index),
-          );
+          refs.current[i]!.style.transition = `transform ${durationTime}s ease`;
+          refs.current[i]!.style.transform =
+            `translate(${moveX}px, ${moveY}px)`;
         }
-      };
-
-      for (let i = 0; i < count; i++) {
-        startAniXY(i);
       }
     }
-
-    return () => {
-      rafRefs.current.forEach((raf) => {
-        cancelAnimationFrame(raf);
-      });
-    };
   }, []);
 
   const setSnowItem = () => {
@@ -102,6 +59,59 @@ const Snow = (props: SnowProps) => {
             height,
             borderRadius: "100%",
             backgroundColor: COLOR_LIST[i % COLOR_LIST.length],
+          }}
+          onAnimationStart={() => {
+            console.log("start");
+          }}
+          onTransitionEnd={() => {
+            if (refs.current) {
+              const endDom = refs.current[i]!;
+
+              if (endDom && parent) {
+                const current = endDom;
+                const parent = parentRef.current;
+
+                const parentWidth = parent.clientWidth;
+                const parentHeight = parent.clientHeight;
+
+                const itemWidth = current!.clientWidth;
+                const itemHeight = current!.clientHeight;
+
+                const maxRight = parentWidth - itemWidth;
+                const maxBottom = parentHeight - itemHeight;
+
+                const currentTransform = window.getComputedStyle(
+                  endDom!,
+                ).transform;
+                const matrix = new DOMMatrix(currentTransform);
+                const currentX = Math.floor(matrix.m41);
+                const currentY = Math.floor(matrix.m42);
+
+                let moveX = 0;
+                let moveY = 0;
+                let durationTime =
+                  Math.floor(Math.random() * 10) + DURATION_TIME;
+
+                if (currentY >= maxBottom) {
+                  moveY = 0;
+
+                  current!.style.opacity = "0";
+                  current!.style.transition = `transform ${0.001}s`;
+                  current!.style.transform = `translate(${moveX}px, ${moveY}px)`;
+
+                  current!.style.opacity = "1";
+                } else {
+                  if (currentX === 0) {
+                    moveX = maxRight - current!.getBoundingClientRect().left;
+                  }
+
+                  moveY = currentY + Math.floor(Math.random() * maxBottom);
+
+                  current!.style.transition = `transform ${1}s ease`;
+                  current!.style.transform = `translate(${moveX}px, ${moveY}px)`;
+                }
+              }
+            }
           }}
         ></div>,
       );
