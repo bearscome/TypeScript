@@ -7,7 +7,13 @@ import Snow from "./components/Snow";
 const App: FC = function () {
   return (
     <>
-      <Snow width={100} height={100} count={10} />
+      <Snow
+        width={"1%"}
+        height={"1%"}
+        count={100}
+        durationTime={1}
+        colorList={["green", "blue", "red", "white", "yellow", "purple"]}
+      />
 
       <div>
         <Profile />
