@@ -13,28 +13,30 @@ const Snow = (props: SnowProps) => {
   const { width, height, count } = props;
   const parentRef = useRef<HTMLDivElement | null>(null);
   const refs = useRef<(HTMLDivElement | null)[]>([]);
+  const rafRefs = useRef<any[]>([]);
 
   useEffect(() => {
-    if (refs.current) {
-      const startAniXY = () => {
-        const currentTransform = window.getComputedStyle(
-          refs.current[0]!,
-        ).transform;
-        const matrix = new DOMMatrix(currentTransform);
-        const currentX = matrix.m41;
-        const currentY = matrix.m42;
+    if (refs.current && parentRef.current) {
+      const startAniXY = (index: number): void => {
+        const current = refs.current[index];
+        const parent = parentRef.current;
 
-        if (parentRef.current && refs.current[0]) {
+        if (parent && current) {
           const ZERO = 0;
 
-          const parentWidth = parentRef.current.clientWidth;
-          const parentHeight = parentRef.current.clientHeight;
+          const currentTransform = window.getComputedStyle(current).transform;
+          const matrix = new DOMMatrix(currentTransform);
+          const currentX = matrix.m41;
+          const currentY = matrix.m42;
 
-          const itemWidth = refs.current[0].clientWidth;
-          const itemHeight = refs.current[0].clientHeight;
+          const parentWidth = parent.clientWidth;
+          const parentHeight = parent.clientHeight;
+
+          const itemWidth = current.clientWidth;
+          const itemHeight = current.clientHeight;
 
           const maxRight = parentWidth - itemWidth;
-          const maxHeight = parentHeight - itemHeight;
+          const maxBottom = parentHeight - itemHeight;
 
           let moveX = 0;
           let moveY = 0;
@@ -42,38 +44,48 @@ const Snow = (props: SnowProps) => {
 
           if (currentY === 0) {
             moveX = maxRight;
-            moveY = Math.floor(Math.random() * 1170);
+            moveY = Math.floor(Math.random() * maxBottom);
             durationTime = Math.floor(Math.random() * 10) + DURATION_TIME;
 
-            refs.current[0].style.transition = `transform ${durationTime}s ease`;
-            refs.current[0].style.transform = `translate(${moveX}px, ${moveY}px)`;
+            current.style.transition = `transform ${durationTime}s ease`;
+            current.style.transform = `translate(${moveX}px, ${moveY}px)`;
           } else if (currentY > 10) {
-            if (currentX == 0 || currentX == maxRight) {
+            if (currentX <= ZERO || currentX >= maxRight) {
               moveX = currentX == 0 ? maxRight : ZERO;
 
-              if (currentY >= maxHeight) {
+              if (currentY >= maxBottom) {
                 durationTime = ZERO;
                 moveY = ZERO;
-              } else if (currentY <= maxHeight) {
+              } else if (currentY <= maxBottom) {
+                moveY = currentY + Math.floor(Math.random() * maxBottom);
                 durationTime = Math.floor(Math.random() * 10) + DURATION_TIME;
-                moveY = currentY + Math.floor(Math.random() * 1170);
 
-                if (maxHeight <= moveY) {
-                  moveY = maxHeight;
+                if (maxBottom <= moveY) {
+                  moveY = maxBottom;
                 }
               }
 
-              refs.current[0].style.transition = `transform ${durationTime}s ease`;
-              refs.current[0].style.transform = `translate(${moveX}px, ${moveY}px)`;
+              current.style.transition = `transform ${durationTime}s ease`;
+              current.style.transform = `translate(${moveX}px, ${moveY}px)`;
             }
           }
-        }
 
-        requestAnimationFrame(startAniXY);
+          rafRefs.current[index] = requestAnimationFrame(() =>
+            startAniXY(index),
+          );
+        }
       };
 
-      startAniXY();
+      for (let i = 0; i < count; i++) {
+        startAniXY(i);
+      }
     }
+
+    return () => {
+      rafRefs.current.forEach((raf) => {
+        cancelAnimationFrame(raf);
+      });
+    };
   }, []);
 
   const setSnowItem = () => {

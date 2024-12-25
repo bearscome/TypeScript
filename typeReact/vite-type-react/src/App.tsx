@@ -7,7 +7,7 @@ import Snow from "./components/Snow";
 const App: FC = function () {
   return (
     <>
-      <Snow width={100} height={100} count={1} />
+      <Snow width={100} height={100} count={10} />
 
       <div>
         <Profile />
