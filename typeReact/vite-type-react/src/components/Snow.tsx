@@ -7,10 +7,15 @@ interface SnowProps {
   durationTime: number;
   colorList: string[];
   reset: boolean;
+  shape: "star" | "";
 }
 
+const SHAPE = {
+  star: "star",
+};
+
 const Snow = (props: SnowProps) => {
-  const { width, height, count, durationTime, colorList, reset } = props;
+  const { width, height, count, durationTime, colorList, reset, shape } = props;
 
   const [key, setKey] = useState(0);
 
@@ -25,11 +30,35 @@ const Snow = (props: SnowProps) => {
         initialOffset.length = 0;
       }
       for (let i = 0; i < count; i++) {
+        if (shape && SHAPE[shape]) {
+          refs.current[i]!.className = SHAPE[shape];
+          refs.current[i]!.style.backgroundColor = "unset";
+        } else {
+          refs.current[i]!.className = "";
+          refs.current[i]!.style.backgroundColor =
+            colorList[i % colorList.length];
+        }
         initialOffset.push(refs.current[i]!.getBoundingClientRect());
         setTransition(i);
       }
     }
   }, [width, height, count, durationTime, key]);
+
+  useEffect(() => {
+    for (let i = 0; i < count; i++) {
+      if (shape && SHAPE[shape]) {
+        refs.current[i]!.className = SHAPE[shape];
+        refs.current[i]!.style.backgroundColor = "unset";
+      } else {
+        refs.current[i]!.className = "";
+        refs.current[i]!.style.backgroundColor =
+          colorList[i % colorList.length];
+      }
+
+      initialOffset.push(refs.current[i]!.getBoundingClientRect());
+      setTransition(i);
+    }
+  }, [shape]);
 
   useEffect(() => {
     setKey((value) => value + 1);

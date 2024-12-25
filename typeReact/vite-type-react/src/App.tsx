@@ -8,6 +8,7 @@ const App: FC = function () {
   const [duration, setDuration] = useState<number>(1);
   const [count, setCount] = useState<number>(100);
   const [reset, setReset] = useState<boolean>(false);
+  const [shape, setShape] = useState<"star" | "">("");
 
   return (
     <>
@@ -19,6 +20,7 @@ const App: FC = function () {
           durationTime={duration}
           colorList={["green", "blue", "red", "white", "yellow", "purple"]}
           reset={reset}
+          shape={shape}
         />
 
         <div
@@ -70,7 +72,15 @@ const App: FC = function () {
               setCount(+v.target.value);
             }}
           />
-          <button onClick={() => setReset(!reset)}>reset</button>
+          <button onClick={() => setShape("star")}>☆</button>
+          <button
+            onClick={() => {
+              setShape("");
+              setReset(!reset);
+            }}
+          >
+            reset
+          </button>
         </div>
       </div>
     </>
