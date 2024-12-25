@@ -1,4 +1,4 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 
 interface SnowProps {
   width: number | string;
@@ -6,22 +6,34 @@ interface SnowProps {
   count: number;
   durationTime: number;
   colorList: string[];
+  reset: boolean;
 }
 
 const Snow = (props: SnowProps) => {
-  const { width, height, count, durationTime, colorList } = props;
+  const { width, height, count, durationTime, colorList, reset } = props;
+
+  const [key, setKey] = useState(0);
+
   const parentRef = useRef<HTMLDivElement | null>(null);
   const refs = useRef<(HTMLDivElement | null)[]>([]);
+
   const initialOffset: any[] = [];
 
   useEffect(() => {
     if (refs.current && parentRef.current) {
+      if (initialOffset.length > 0) {
+        initialOffset.length = 0;
+      }
       for (let i = 0; i < count; i++) {
         initialOffset.push(refs.current[i]!.getBoundingClientRect());
         setTransition(i);
       }
     }
-  }, []);
+  }, [width, height, count, durationTime, key]);
+
+  useEffect(() => {
+    setKey((value) => value + 1);
+  }, [reset]);
 
   const setTransition = (index: number): void => {
     const wrapRef = parentRef.current;
@@ -91,6 +103,7 @@ const Snow = (props: SnowProps) => {
 
   return (
     <div
+      key={key}
       ref={parentRef}
       style={{
         display: "flex",
