@@ -1,6 +1,6 @@
 import { FC, useState } from "react";
-import "./App.css";
-import Snow from "./components/Snow";
+import "../../css/App.css";
+import Snow from "../../component/Snow";
 
 const App: FC = function () {
   const [width, setWidth] = useState<number>(1);
