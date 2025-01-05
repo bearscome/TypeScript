@@ -1,8 +1,8 @@
 import { FC, useState } from "react";
-import "../../css/App.css";
-import Snow from "../../component/Snow";
+import "../../../css/App.css";
+import Snow from "../../../component/Snow";
 
-const App: FC = function () {
+const SnowFall: FC = function () {
   const [width, setWidth] = useState<number>(1);
   const [height, setHeight] = useState<number>(1);
   const [duration, setDuration] = useState<number>(1);
@@ -87,4 +87,4 @@ const App: FC = function () {
   );
 };
 
-export default App;
+export default SnowFall;
